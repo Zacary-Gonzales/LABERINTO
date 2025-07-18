@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Laberinto</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        #juego {
+            position: relative;
+            width: 95vw;
+            height: 95vh;
+            background-color: #e0e0e0;
+            border: 3px solid #333;
+            overflow: hidden;
+        }
+        
+        #personaje {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #4287f5;
+            border-radius: 50%;
+            top: 6%;
+            left: 14%;
+            transition: all 0.1s ease;
+            z-index: 2;
+        }
+        
+        .obstaculo {
+            position: absolute;
+            background-color: #f54242;
+            z-index: 1;
+        }
+        
+        .obstaculo-mueve-horizontal {
+            position: absolute;
+            background-color: #f5a742;
+            z-index: 1;
+            animation: moverHorizontal 3s linear infinite;
+        }
+        
+        .obstaculo-mueve-vertical {
+            position: absolute;
+            background-color: #f5a742;
+            z-index: 1;
+            animation: moverVertical 3s linear infinite;
+        }
+        
+        @keyframes moverHorizontal {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(150px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes moverVertical {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(150px); }
+            100% { transform: translateY(0); }
+        }
+        
+        #meta {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #42f551;
+            border-radius: 8px;
+            right: 30px;
+            bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        #mensaje {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #llave {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: gold;
+            border-radius: 50%;
+            top: 40px;
+            left: 25%;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        #ganaste {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #42f551;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        
+        #obstaculo1 {
+            width: 200px;
+            height: 20px;
+            top: 100px;
+            left: 150px;
+        }
+        
+        #obstaculo2 {
+            width: 20px;
+            height: 150px;
+            top: 200px;
+            right: 200px;
+        }
+        
+        #obstaculo3 {
+            width: 120px;
+            height: 20px;
+            bottom: 150px;
+            left: 80px;
+        }
+
+        #obstaculo4 {
+            width: 20px;
+            height: 250px;
+            top: 50px;
+            left: 300px;
+        }
+
+        #obstaculo5 {
+            width: 150px;
+            height: 20px;
+            top: 250px;
+            right: 100px;
+        }
+
+        #obstaculo6 {
+            width: 40px;
+            height: 40px;
+            top: 120px;
+            right: 120px;
+        }
+
+        #obstaculo7 {
+            width: 100px;
+            height: 100px;
+            bottom: 80px;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="juego">
+        <div id="personaje"></div>
+        <div id="meta">META</div>
+        <div id="llave">🔑</div>
+        <div id="ganaste">¡GANASTE!</div>
+        <div class="obstaculo" style="width:20px;height:200px;top:0;left:20%"></div>
+        <div class="obstaculo" style="width:83%;height:20px;top:100px;left:10%"></div>
+        <div class="obstaculo" style="width:20px;height:230px;top:120px;left:50%"></div>
+        <div class="obstaculo" style="width:20%;height:20px;top:250px;left:60%"></div>
+        <div class="obstaculo" style="width:20px;height:250px;top:290px;left:20%"></div>
+        <div class="obstaculo" style="width:40%;height:20px;bottom:200px;left:10%"></div>
+        <div class="obstaculo" style="width:20px;height:120px;bottom:100px;left:70%"></div>
+        <div class="obstaculo" style="width:25%;height:20px;bottom:100px;left:45%"></div>
+        <div class="obstaculo" style="width:20px;height:200px;top:120px;right:20%"></div>
+        <div class="obstaculo" style="width:20px;height:10%;top:50px;right:180px"></div>
+        <div class="obstaculo" style="width:20px;height:8%;top:0px;right:500px"></div>
+        <div class="obstaculo" style="width:20px;height:10%;top:50px;right:800px"></div>
+        <div class="obstaculo" style="width:10%;height:20px;top:35%;left:0px"></div>
+        <div class="obstaculo" style="width:20px;height:15%;bottom:0px;left:10%"></div>
+        <div class="obstaculo" style="width:20px;height:15%;bottom:0px;left:30%"></div>
+        <div class="obstaculo" style="width:20px;height:17%;bottom:100px;left:45%"></div>
+        <div class="obstaculo" style="width:20px;height:35%;bottom:0px;right:20%"></div>
+        <div class="obstaculo" style="width:13%;height:20px;bottom:211px;right:7%"></div>
+        <div class="obstaculo" style="width:13%;height:20px;bottom:100px;right:0%"></div>
+        <div class="obstaculo" style="width:20px;height:30%;bottom:230px;right:7%"></div>
+
+
+
+        <div class="obstaculo-mueve-horizontal" style="width:40px;height:40px;top:230px;left:25%"></div>
+        <div class="obstaculo-mueve-vertical" style="width:40px;height:40px;top:165px;left:30%"></div>
+        <div class="obstaculo-mueve-horizontal" style="width:40px;height:40px;top:350px;left:35%"></div>
+        <div class="obstaculo-mueve-vertical" style="width:40px;height:40px;bottom:150px;left:3%"></div>
+        <div class="obstaculo-mueve-vertical" style="width:80px;height:80px;bottom:420px;right:11%"></div>
+        <div class="obstaculo-mueve-horizontal" style="width:100px;height:100px;bottom:0px;right:62%"></div>
+
+
+
+        <div class="obstaculo-mueve-vertical" style="width:80px;height:80px;bottom:280px;left:60%"></div>
+    </div>
+
+    <script>
+        const personaje = document.getElementById('personaje');
+        const juego = document.getElementById('juego');
+        const meta = document.getElementById('meta');
+        const mensaje = document.getElementById('mensaje');
+        
+        const juegoAncho = juego.offsetWidth;
+        const juegoAlto = juego.offsetHeight;
+        const personajeAncho = 30;
+        const personajeAlto = 30;
+        
+        let posX = 50;
+        let posY = 50;
+        
+        const velocidad = 10;
+        alert("CUADRADOS NARANJA NO MATAN, SOLO DESACELERAN. TIENES QUE AGARRAR LA LLAVE PARA PODER GANAR!!!!!")
+        
+        function hayColision(obstaculo) {
+            const rectPersonaje = personaje.getBoundingClientRect();
+            const rectObstaculo = obstaculo.getBoundingClientRect();
+            
+            return !(
+                rectPersonaje.right < rectObstaculo.left ||
+                rectPersonaje.left > rectObstaculo.right ||
+                rectPersonaje.bottom < rectObstaculo.top ||
+                rectPersonaje.top > rectObstaculo.bottom
+            );
+        }
+        
+        let tieneLlave = false;
+
+        function verificarLlave() {
+            const llave = document.getElementById('llave');
+            if (hayColision(llave)) {
+                tieneLlave = true;
+                llave.style.display = 'none';
+                mensaje.textContent = '¡Has encontrado la llave! Ahora dirígete a la meta.';
+            }
+        }
+
+        function verificarMeta() {
+            if (hayColision(meta)) {
+                if (tieneLlave) {
+                    document.getElementById('ganaste').style.display = 'block';
+                    document.removeEventListener('keydown', moverPersonaje);
+                } else {
+                    mensaje.textContent = '¡Necesitas encontrar la llave primero!';
+                }
+            }
+        }
+        
+        function moverPersonaje(e) {
+            let nuevaX = posX;
+            let nuevaY = posY;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    nuevaY = posY - velocidad;
+                    break;
+                case 'ArrowDown':
+                    nuevaY = posY + velocidad;
+                    break;
+                case 'ArrowLeft':
+                    nuevaX = posX - velocidad;
+                    break;
+                case 'ArrowRight':
+                    nuevaX = posX + velocidad;
+                    break;
+                default:
+                    return; 
+            }
+            
+            if (
+                nuevaX >= 0 &&
+                nuevaX <= juegoAncho - personajeAncho &&
+                nuevaY >= 0 &&
+                nuevaY <= juegoAlto - personajeAlto
+            ) {
+                const obstaculos = document.querySelectorAll('.obstaculo, .obstaculo-mueve-horizontal, .obstaculo-mueve-vertical');
+                let colision = false;
+                
+                obstaculos.forEach(obs => {
+                    personaje.style.left = nuevaX + 'px';
+                    personaje.style.top = nuevaY + 'px';
+                    
+                    if (hayColision(obs)) {
+                        colision = true;
+                        if (obs.classList.contains('obstaculo-moviente')) {
+                            personaje.style.backgroundColor = 'red';
+                            setTimeout(() => {
+                                personaje.style.backgroundColor = '#4287f5';
+                            }, 300);
+                        }
+                    }
+                    
+                    personaje.style.left = posX + 'px';
+                    personaje.style.top = posY + 'px';
+                });
+                
+                if (!colision) {
+                    posX = nuevaX;
+                    posY = nuevaY;
+                    personaje.style.left = posX + 'px';
+                    personaje.style.top = posY + 'px';
+                    
+                    verificarLlave();
+                    verificarMeta();
+                }
+            }
+        }
+        
+        document.addEventListener('keydown', moverPersonaje);
+    </script>
+</body>
+</html>
+
